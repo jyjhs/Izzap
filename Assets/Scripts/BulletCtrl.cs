@@ -10,6 +10,8 @@ public class BulletCtrl : MonoBehaviour
     private float time = 0f;
     private float randY = 0f;
 
+    private float ranTime = 0f;
+
     private void Start()
     {
         if (endPos.y > startPos.y)
@@ -20,11 +22,12 @@ public class BulletCtrl : MonoBehaviour
         }
 
         rand = new Vector2(Random.Range(endPos.x, startPos.x), randY);
+        ranTime = Random.Range(1f, 1.3f);
     }
 
     private void FixedUpdate()  
     {
-        if (time < 1f) 
+        if (time < ranTime) 
         {
             transform.position = BezierCurve(time, startPos, rand, endPos);
             time += Time.deltaTime;
