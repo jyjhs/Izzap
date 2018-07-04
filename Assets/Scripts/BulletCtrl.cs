@@ -11,9 +11,11 @@ public class BulletCtrl : MonoBehaviour
     private float randY = 0f;
 
     private float ranTime = 0f;
+    public Animator anim;
 
     private void Start()
     {
+        time = 0f;
         if (endPos.y > startPos.y)
             randY = Random.Range(endPos.y + 5f, endPos.y + 40f);
         else
@@ -22,21 +24,25 @@ public class BulletCtrl : MonoBehaviour
         }
 
         rand = new Vector2(Random.Range(endPos.x, startPos.x), randY);
-        ranTime = Random.Range(1f, 1.3f);
+        ranTime = Random.Range(0.8f, 1.3f);
     }
 
     private void FixedUpdate()  
     {
-        if (time < ranTime) 
+        if (time < ranTime)
         {
             transform.position = BezierCurve(time, startPos, rand, endPos);
-            time += Time.deltaTime;
+            time += Time.deltaTime * 0.7f;
         }
         else
         {
-            Destroy(gameObject);
+            anim.Play("Bullet");
         }
+    }
 
+    public void Remove()
+    {
+        Destroy(gameObject);
     }
 
     private Vector3 BezierCurve(float t, Vector3 p0, Vector3 p1)

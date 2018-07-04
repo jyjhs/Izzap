@@ -13,6 +13,8 @@ public class AnimEvent : MonoBehaviour
     public GameObject boss;
     public Transform bulletSpawn;
     public RectTransform rect;
+    public GameObject shadow;
+    public SpriteRenderer sprite;
 
     private void Start()
     {
@@ -113,13 +115,25 @@ public class AnimEvent : MonoBehaviour
     {
         float timeTemp = 0f;
 
-        while (timeTemp < 1.5f)
+        while (timeTemp < 0.6f)
         {
+            shadow.transform.localScale = Vector3.Lerp(shadow.transform.localScale, new Vector3(0.7f, 0.7f, 1f), Time.deltaTime);
             boss.transform.position = Vector2.MoveTowards(boss.transform.position, bossCtrl.target.transform.position, Time.deltaTime * 40f);
 
             yield return null;
             timeTemp += Time.deltaTime;
         }
+
+        timeTemp = 0f;
+        while (timeTemp < 0.4f)
+        {
+            shadow.transform.localScale = Vector3.Lerp(shadow.transform.localScale, new Vector3(1f, 1f, 1f), Time.deltaTime);
+            boss.transform.position = Vector2.MoveTowards(boss.transform.position, bossCtrl.target.transform.position, Time.deltaTime * 40f);
+
+            yield return null;
+            timeTemp += Time.deltaTime;
+        }
+        shadow.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
     public void HighJump()
@@ -149,5 +163,52 @@ public class AnimEvent : MonoBehaviour
     public void HighJumpMove()
     {
         boss.transform.position = new Vector2(bossCtrl.target.transform.position.x, bossCtrl.target.transform.position.y);
+    }
+
+    public IEnumerator ShadowSize()
+    {
+        float timeTemp = 0f;
+
+        while (timeTemp < 0.8f)
+        {
+            shadow.transform.localScale = Vector3.Lerp(shadow.transform.localScale, new Vector3(0.5f, 0.5f, 1f), Time.deltaTime);
+
+            yield return null;
+            timeTemp += Time.deltaTime;
+        }
+
+        yield return new WaitForSeconds(0.3f);
+        timeTemp = 0f;
+        while (timeTemp < 0.7f)
+        {
+            shadow.transform.localScale = Vector3.Lerp(shadow.transform.localScale, new Vector3(1f, 1f, 1f), Time.deltaTime);
+
+            yield return null;
+            timeTemp += Time.deltaTime;
+        }
+        shadow.transform.localScale = new Vector3(1f, 1f, 1f);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag.Equals("bubble"))
+        {
+            bossCtrl.DecreaseHp();
+            Destroy(other.gameObject);
+            StartCoroutine(Hited());
+        }
+    }
+
+    public void Die()
+    {
+        Destroy(boss.gameObject);
+    }
+
+    public IEnumerator Hited()
+    {
+        var originColor = sprite.color;
+        sprite.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        sprite.color = originColor;
     }
 }

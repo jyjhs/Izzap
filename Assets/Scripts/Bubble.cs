@@ -29,13 +29,11 @@ public class Bubble : MonoBehaviour {
         rigid.simulated = false;
         thisAnimator.Play("Attack");
     }
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Wall"||other.tag == "Enemy"||other.tag == "EnterDoor")
+        if (other.tag != "Player")
         {
-            rigid.simulated = false;
             PlayeAni();
-            Debug.Log("Hit");
         }
     }
 }
